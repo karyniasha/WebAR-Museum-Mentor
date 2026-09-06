@@ -4,6 +4,8 @@ const targetFileUrl = `${import.meta.env.BASE_URL}targets/targets.mind`
 const mindarModuleUrl =
   'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js'
 const mindarModule = import(/* @vite-ignore */ mindarModuleUrl)
+const threeModuleName = 'three'
+const threeModule = import(/* @vite-ignore */ threeModuleName)
 
 mindarModule
   .then(({ MindARThree }) => {
@@ -38,13 +40,22 @@ startButton.addEventListener('click', async () => {
   cameraPreview.hidden = false
 
   try {
-    const { MindARThree } = await mindarModule
+    const [{ MindARThree }, THREE] = await Promise.all([mindarModule, threeModule])
     const mindarThree = new MindARThree({
       container: cameraPreview,
       imageTargetSrc: targetFileUrl,
     })
     const { renderer, scene, camera } = mindarThree
     const anchor = mindarThree.addAnchor(0)
+    const geometry = new THREE.PlaneGeometry(1, 0.6)
+    const material = new THREE.MeshBasicMaterial({
+      color: 0x00aaff,
+      transparent: true,
+      opacity: 0.5,
+    })
+    const plane = new THREE.Mesh(geometry, material)
+
+    anchor.group.add(plane)
 
     anchor.onTargetFound = () => {
       cameraMessage.textContent = 'Изображение распознано'

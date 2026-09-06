@@ -75,3 +75,26 @@ h1 {
   outline: 3px solid #dca75e;
   outline-offset: 3px;
 }
+
+.camera-preview {
+  aspect-ratio: 3 / 4;
+  margin-top: 24px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #302415;
+}
+
+.camera-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.camera-message {
+  min-height: 1.5em;
+  margin: 16px 0 0;
+  color: #a33f2c;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}

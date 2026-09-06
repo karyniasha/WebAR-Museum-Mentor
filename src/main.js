@@ -45,6 +45,7 @@ startButton.addEventListener('click', async () => {
   startButton.disabled = true
   cameraMessage.textContent = ''
   cameraPreview.hidden = false
+  document.body.classList.add('ar-active')
 
   try {
     if (!mindarThree) {
@@ -85,6 +86,7 @@ startButton.addEventListener('click', async () => {
     startButton.hidden = true
     closeButton.hidden = false
   } catch {
+    document.body.classList.remove('ar-active')
     cameraPreview.hidden = true
     cameraMessage.textContent = 'Не удалось запустить MindAR. Проверьте разрешение на камеру.'
     startButton.disabled = false
@@ -94,6 +96,7 @@ startButton.addEventListener('click', async () => {
 closeButton.addEventListener('click', () => {
   mindarThree.stop()
   renderer.setAnimationLoop(null)
+  document.body.classList.remove('ar-active')
   cameraPreview.hidden = true
   cameraMessage.textContent = ''
   startButton.hidden = false

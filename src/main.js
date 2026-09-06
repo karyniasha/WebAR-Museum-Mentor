@@ -48,12 +48,14 @@ startButton.addEventListener('click', async () => {
     })
     const { renderer, scene, camera } = mindarThree
     const anchor = mindarThree.addAnchor(0)
-    const geometry = new THREE.PlaneGeometry(1, 0.6)
-    const texture = new THREE.TextureLoader().load(contentImageUrl)
+    const texture = await new THREE.TextureLoader().loadAsync(contentImageUrl)
+    const { width, height } = texture.image
+    const aspectRatio = width / height
+    const geometry = new THREE.PlaneGeometry(1, 1 / aspectRatio)
     const material = new THREE.MeshBasicMaterial({
       map: texture,
       transparent: true,
-      opacity: 0.5,
+      opacity: 1,
     })
     const plane = new THREE.Mesh(geometry, material)
 

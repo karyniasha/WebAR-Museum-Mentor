@@ -46,8 +46,14 @@ startButton.addEventListener('click', async () => {
     const { renderer, scene, camera } = mindarThree
     const anchor = mindarThree.addAnchor(0)
 
-    anchor.onTargetFound = () => console.log('MindAR target found')
-    anchor.onTargetLost = () => console.log('MindAR target lost')
+    anchor.onTargetFound = () => {
+      cameraMessage.textContent = 'Изображение распознано'
+      console.log('MindAR target found')
+    }
+    anchor.onTargetLost = () => {
+      cameraMessage.textContent = 'Наведите камеру на изображение'
+      console.log('MindAR target lost')
+    }
 
     await mindarThree.start()
     renderer.setAnimationLoop(() => renderer.render(scene, camera))

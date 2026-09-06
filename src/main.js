@@ -1,6 +1,7 @@
 import './style.css'
 
 const targetFileUrl = `${import.meta.env.BASE_URL}targets/targets.mind`
+const contentImageUrl = `${import.meta.env.BASE_URL}content/test%201.png`
 const mindarModuleUrl =
   'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js'
 const mindarModule = import(/* @vite-ignore */ mindarModuleUrl)
@@ -48,8 +49,9 @@ startButton.addEventListener('click', async () => {
     const { renderer, scene, camera } = mindarThree
     const anchor = mindarThree.addAnchor(0)
     const geometry = new THREE.PlaneGeometry(1, 0.6)
+    const texture = new THREE.TextureLoader().load(contentImageUrl)
     const material = new THREE.MeshBasicMaterial({
-      color: 0x00aaff,
+      map: texture,
       transparent: true,
       opacity: 0.5,
     })

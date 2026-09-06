@@ -3,8 +3,9 @@ import './style.css'
 const targetFileUrl = `${import.meta.env.BASE_URL}targets/targets.mind`
 const mindarModuleUrl =
   'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js'
+const mindarModule = import(/* @vite-ignore */ mindarModuleUrl)
 
-import(/* @vite-ignore */ mindarModuleUrl)
+mindarModule
   .then(({ MindARThree }) => {
     console.info('MindARThree успешно импортирован.', { MindARThree, targetFileUrl })
   })
@@ -21,9 +22,7 @@ document.querySelector('#app').innerHTML = `
         Наведите камеру на музейное изображение, чтобы увидеть историческую сцену.
       </p>
       <button class="start-button" type="button">Запустить</button>
-      <div class="camera-preview" hidden>
-        <video class="camera-video" autoplay playsinline muted></video>
-      </div>
+      <div class="camera-preview" hidden></div>
       <p class="camera-message" role="status" aria-live="polite"></p>
     </section>
   </main>
@@ -31,26 +30,31 @@ document.querySelector('#app').innerHTML = `
 
 const startButton = document.querySelector('.start-button')
 const cameraPreview = document.querySelector('.camera-preview')
-const cameraVideo = document.querySelector('.camera-video')
 const cameraMessage = document.querySelector('.camera-message')
 
 startButton.addEventListener('click', async () => {
-  if (!navigator.mediaDevices?.getUserMedia) {
-    cameraMessage.textContent = 'Камера не поддерживается этим браузером.'
-    return
-  }
+  startButton.disabled = true
+  cameraMessage.textContent = ''
+  cameraPreview.hidden = false
 
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment' },
-      audio: false,
+    const { MindARThree } = await mindarModule
+    const mindarThree = new MindARThree({
+      container: cameraPreview,
+      imageTargetSrc: targetFileUrl,
     })
+    const { renderer, scene, camera } = mindarThree
+    const anchor = mindarThree.addAnchor(0)
 
-    cameraVideo.srcObject = stream
-    cameraPreview.hidden = false
-    cameraMessage.textContent = ''
+    anchor.onTargetFound = () => console.log('MindAR target found')
+    anchor.onTargetLost = () => console.log('MindAR target lost')
+
+    await mindarThree.start()
+    renderer.setAnimationLoop(() => renderer.render(scene, camera))
     startButton.hidden = true
   } catch {
-    cameraMessage.textContent = 'Не удалось получить доступ к камере. Проверьте разрешения браузера.'
+    cameraPreview.hidden = true
+    cameraMessage.textContent = 'Не удалось запустить MindAR. Проверьте разрешение на камеру.'
+    startButton.disabled = false
   }
 })

@@ -79,6 +79,7 @@ h1 {
 .camera-preview {
   aspect-ratio: 3 / 4;
   margin-top: 24px;
+  position: relative;
   overflow: hidden;
   border-radius: 16px;
   background: #302415;

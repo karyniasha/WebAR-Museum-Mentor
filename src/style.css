@@ -55,7 +55,8 @@ h1 {
   line-height: 1.6;
 }
 
-.start-button {
+.start-button,
+.close-button {
   width: 100%;
   min-height: 52px;
   border: 0;
@@ -67,13 +68,19 @@ h1 {
   cursor: pointer;
 }
 
-.start-button:hover {
+.start-button:hover,
+.close-button:hover {
   background: #724918;
 }
 
-.start-button:focus-visible {
+.start-button:focus-visible,
+.close-button:focus-visible {
   outline: 3px solid #dca75e;
   outline-offset: 3px;
+}
+
+.close-button {
+  margin-top: 16px;
 }
 
 .camera-preview {

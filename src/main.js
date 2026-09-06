@@ -26,14 +26,20 @@ document.querySelector('#app').innerHTML = `
       </p>
       <button class="start-button" type="button">Запустить</button>
       <div class="camera-preview" hidden></div>
+      <button class="close-button" type="button" hidden>Закрыть AR</button>
       <p class="camera-message" role="status" aria-live="polite"></p>
     </section>
   </main>
 `
 
 const startButton = document.querySelector('.start-button')
+const closeButton = document.querySelector('.close-button')
 const cameraPreview = document.querySelector('.camera-preview')
 const cameraMessage = document.querySelector('.camera-message')
+let mindarThree
+let renderer
+let scene
+let camera
 
 startButton.addEventListener('click', async () => {
   startButton.disabled = true
@@ -41,41 +47,56 @@ startButton.addEventListener('click', async () => {
   cameraPreview.hidden = false
 
   try {
-    const [{ MindARThree }, THREE] = await Promise.all([mindarModule, threeModule])
-    const mindarThree = new MindARThree({
-      container: cameraPreview,
-      imageTargetSrc: targetFileUrl,
-    })
-    const { renderer, scene, camera } = mindarThree
-    const anchor = mindarThree.addAnchor(0)
-    const texture = await new THREE.TextureLoader().loadAsync(contentImageUrl)
-    const { width, height } = texture.image
-    const aspectRatio = width / height
-    const geometry = new THREE.PlaneGeometry(1, 1 / aspectRatio)
-    const material = new THREE.MeshBasicMaterial({
-      map: texture,
-      transparent: true,
-      opacity: 1,
-    })
-    const plane = new THREE.Mesh(geometry, material)
+    if (!mindarThree) {
+      const [{ MindARThree }, THREE] = await Promise.all([mindarModule, threeModule])
+      mindarThree = new MindARThree({
+        container: cameraPreview,
+        imageTargetSrc: targetFileUrl,
+      })
+      renderer = mindarThree.renderer
+      scene = mindarThree.scene
+      camera = mindarThree.camera
+      const anchor = mindarThree.addAnchor(0)
+      const texture = await new THREE.TextureLoader().loadAsync(contentImageUrl)
+      const { width, height } = texture.image
+      const aspectRatio = width / height
+      const geometry = new THREE.PlaneGeometry(1, 1 / aspectRatio)
+      const material = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        opacity: 1,
+      })
+      const plane = new THREE.Mesh(geometry, material)
 
-    anchor.group.add(plane)
+      anchor.group.add(plane)
 
-    anchor.onTargetFound = () => {
-      cameraMessage.textContent = 'Изображение распознано'
-      console.log('MindAR target found')
-    }
-    anchor.onTargetLost = () => {
-      cameraMessage.textContent = 'Наведите камеру на изображение'
-      console.log('MindAR target lost')
+      anchor.onTargetFound = () => {
+        cameraMessage.textContent = 'Изображение распознано'
+        console.log('MindAR target found')
+      }
+      anchor.onTargetLost = () => {
+        cameraMessage.textContent = 'Наведите камеру на изображение'
+        console.log('MindAR target lost')
+      }
     }
 
     await mindarThree.start()
     renderer.setAnimationLoop(() => renderer.render(scene, camera))
     startButton.hidden = true
+    closeButton.hidden = false
   } catch {
     cameraPreview.hidden = true
     cameraMessage.textContent = 'Не удалось запустить MindAR. Проверьте разрешение на камеру.'
     startButton.disabled = false
   }
+})
+
+closeButton.addEventListener('click', () => {
+  mindarThree.stop()
+  renderer.setAnimationLoop(null)
+  cameraPreview.hidden = true
+  cameraMessage.textContent = ''
+  startButton.hidden = false
+  startButton.disabled = false
+  closeButton.hidden = true
 })

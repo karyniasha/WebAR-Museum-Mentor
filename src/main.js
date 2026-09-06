@@ -1,7 +1,7 @@
 import './style.css'
 
 const targetFileUrl = `${import.meta.env.BASE_URL}targets/targets.mind`
-const contentImageUrl = `${import.meta.env.BASE_URL}content/test%201.png`
+const contentImageUrl = `${import.meta.env.BASE_URL}content/test%202.jpg`
 const mindarModuleUrl =
   'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js'
 const mindarModule = import(/* @vite-ignore */ mindarModuleUrl)

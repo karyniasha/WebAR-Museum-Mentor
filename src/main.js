@@ -1,5 +1,17 @@
 import './style.css'
 
+const targetFileUrl = `${import.meta.env.BASE_URL}targets/targets.mind`
+const mindarModuleUrl =
+  'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js'
+
+import(/* @vite-ignore */ mindarModuleUrl)
+  .then(({ MindARThree }) => {
+    console.info('MindARThree успешно импортирован.', { MindARThree, targetFileUrl })
+  })
+  .catch(() => {
+    console.warn('Не удалось импортировать MindARThree.')
+  })
+
 document.querySelector('#app').innerHTML = `
   <main class="welcome-screen">
     <section class="welcome-card" aria-labelledby="page-title">

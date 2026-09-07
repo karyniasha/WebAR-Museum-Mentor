@@ -41,6 +41,7 @@ let renderer
 let scene
 let camera
 let anchor
+let isArActive = false
 
 startButton.addEventListener('click', async () => {
   startButton.disabled = true
@@ -74,21 +75,37 @@ startButton.addEventListener('click', async () => {
       anchor.group.add(plane)
 
       anchor.onTargetFound = () => {
+        if (!isArActive) {
+          anchor.group.visible = false
+          anchor.visible = false
+          return
+        }
+
         cameraMessage.textContent = 'Изображение распознано'
         console.log('MindAR target found')
       }
       anchor.onTargetLost = () => {
+        if (!isArActive) {
+          return
+        }
+
         cameraMessage.textContent = 'Наведите камеру на изображение'
         console.log('MindAR target lost')
       }
     }
 
+    if (anchor) {
+      anchor.group.visible = false
+      anchor.visible = false
+    }
+    isArActive = true
     await mindarThree.start()
     cameraMessage.textContent = 'Наведите камеру на изображение'
     renderer.setAnimationLoop(() => renderer.render(scene, camera))
     startButton.hidden = true
     closeButton.hidden = false
   } catch {
+    isArActive = false
     document.body.classList.remove('ar-active')
     cameraPreview.hidden = true
     cameraMessage.textContent = 'Не удалось запустить MindAR. Проверьте разрешение на камеру.'
@@ -97,6 +114,7 @@ startButton.addEventListener('click', async () => {
 })
 
 closeButton.addEventListener('click', () => {
+  isArActive = false
   mindarThree.stop()
   anchor.group.visible = false
   anchor.visible = false

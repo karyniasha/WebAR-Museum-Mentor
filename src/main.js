@@ -82,6 +82,7 @@ startButton.addEventListener('click', async () => {
     }
 
     await mindarThree.start()
+    cameraMessage.textContent = 'Наведите камеру на изображение'
     renderer.setAnimationLoop(() => renderer.render(scene, camera))
     startButton.hidden = true
     closeButton.hidden = false

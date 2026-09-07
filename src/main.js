@@ -53,6 +53,7 @@ startButton.addEventListener('click', async () => {
       mindarThree = new MindARThree({
         container: cameraPreview,
         imageTargetSrc: targetFileUrl,
+        uiScanning: 'no',
       })
       renderer = mindarThree.renderer
       scene = mindarThree.scene

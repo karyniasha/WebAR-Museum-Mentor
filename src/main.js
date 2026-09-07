@@ -40,6 +40,7 @@ let mindarThree
 let renderer
 let scene
 let camera
+let anchor
 
 startButton.addEventListener('click', async () => {
   startButton.disabled = true
@@ -58,7 +59,7 @@ startButton.addEventListener('click', async () => {
       renderer = mindarThree.renderer
       scene = mindarThree.scene
       camera = mindarThree.camera
-      const anchor = mindarThree.addAnchor(0)
+      anchor = mindarThree.addAnchor(0)
       const texture = await new THREE.TextureLoader().loadAsync(contentImageUrl)
       const { width, height } = texture.image
       const aspectRatio = width / height
@@ -97,6 +98,8 @@ startButton.addEventListener('click', async () => {
 
 closeButton.addEventListener('click', () => {
   mindarThree.stop()
+  anchor.group.visible = false
+  anchor.visible = false
   renderer.setAnimationLoop(null)
   document.body.classList.remove('ar-active')
   cameraPreview.hidden = true

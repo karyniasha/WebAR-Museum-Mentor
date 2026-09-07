@@ -61,7 +61,7 @@ startButton.addEventListener('click', async () => {
       const texture = await new THREE.TextureLoader().loadAsync(contentImageUrl)
       const { width, height } = texture.image
       const aspectRatio = width / height
-      const geometry = new THREE.PlaneGeometry(1, 1 / aspectRatio)
+      const geometry = new THREE.PlaneGeometry(0.78, 0.78 / aspectRatio)
       const material = new THREE.MeshBasicMaterial({
         map: texture,
         transparent: true,

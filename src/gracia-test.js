@@ -22,7 +22,9 @@ if (!navigator.gpu) {
 }
 
 async function initialize() {
+  status.textContent = 'Creating renderer...'
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+  status.textContent = 'Renderer ready'
   renderer.setPixelRatio(window.devicePixelRatio)
   viewer.append(renderer.domElement)
 
@@ -43,7 +45,12 @@ async function initialize() {
 
   window.addEventListener('resize', resize)
   resize()
-const GraciaModule = await loadGraciaModule(__GRACIA_MODULE_URL__)
+
+  status.textContent = 'Loading Gracia WASM...'
+  const GraciaModule = await loadGraciaModule(__GRACIA_MODULE_URL__)
+  status.textContent = 'Gracia WASM loaded'
+
+  status.textContent = 'Creating Gracia player...'
   const player = await GraciaPlayer.create(
     opts =>
       GraciaModule({
@@ -56,10 +63,13 @@ const GraciaModule = await loadGraciaModule(__GRACIA_MODULE_URL__)
       backend: 'hybrid',
     },
   )
+  status.textContent = 'Gracia player created'
 
+  status.textContent = 'Creating SplatsMesh...'
   const splats = new SplatsMesh(player)
   splats.enableMesh = true
   scene.add(splats)
+  status.textContent = 'SplatsMesh ready'
 
   const source = new URLSearchParams(window.location.search).get('source')
 
